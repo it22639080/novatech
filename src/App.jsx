@@ -1,4 +1,21 @@
 import { useState, useEffect, useRef, useCallback, memo } from "react";
+import { FaReact, FaNodeJs, FaDocker, FaJava, FaAngular, FaAws } from "react-icons/fa";
+import { SiMongodb, SiFlutter, SiPython, SiTypescript, SiGraphql, SiFirebase, SiRedis, SiPostgresql, SiSpringboot, SiDotnet, SiFlask, SiKubernetes } from "react-icons/si";
+import logo from "./assets/logo.jpeg";
+
+
+/* ═══════════════════════════════════════════════════════════════
+   ✅ EMAILJS SETUP — Replace these 3 values with your own:
+   1. Go to https://www.emailjs.com and create a free account
+   2. Add an Email Service  → copy the Service ID
+   3. Create an Email Template → copy the Template ID
+      Template variables to use: {{from_name}}, {{from_email}},
+                                  {{project_type}}, {{message}}
+   4. Go to Account → Public Key → copy it
+═══════════════════════════════════════════════════════════════ */
+const EMAILJS_SERVICE_ID  = "service_odme19s";   // e.g. "service_abc123"
+const EMAILJS_TEMPLATE_ID = "template_shh27mq";  // e.g. "template_xyz789"
+const EMAILJS_PUBLIC_KEY  = "aKz0dnR52r5syhOqa";   // e.g. "aBcDeFgH1234567"
 
 /* ═══════════════════════════════════════════════════════════════
    GLOBAL STYLES
@@ -54,60 +71,56 @@ const Styles = () => (
     ::-webkit-scrollbar-track{background:var(--bg)}
     ::-webkit-scrollbar-thumb{background:linear-gradient(var(--blue),var(--cyan));border-radius:99px}
 
-    /* ── Gradients ── */
     .g1{background:linear-gradient(120deg,var(--blue),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
     .g2{background:linear-gradient(120deg,var(--purple),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
     .g3{background:linear-gradient(120deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 
-    /* ── Keyframes ── */
     @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
     @keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:none}}
     @keyframes scaleIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
     @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
     @keyframes floatR{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-8px) rotate(2deg)}}
     @keyframes spin{to{transform:rotate(360deg)}}
-    @keyframes spinR{to{transform:rotate(-360deg)}}
     @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.9)}}
     @keyframes pulseRing{0%{transform:scale(1);opacity:.5}100%{transform:scale(2.4);opacity:0}}
     @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
     @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
-    @keyframes borderGlow{0%,100%{opacity:.35}50%{opacity:1}}
     @keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
     @keyframes countIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
     @keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
     @keyframes orbitSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
     @keyframes orbitSpinR{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
-    @keyframes gradShift{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(30deg)}}
     @keyframes slideInRight{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
-    @keyframes togglePop{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
-
-    /* ── Section-specific animations ── */
     @keyframes cardReveal{from{opacity:0;transform:translateY(36px) scale(.97)}to{opacity:1;transform:none}}
     @keyframes iconBounce{0%{transform:scale(1)}30%{transform:scale(1.22) rotate(-6deg)}60%{transform:scale(.95) rotate(2deg)}100%{transform:scale(1) rotate(0deg)}}
     @keyframes shimmerLine{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}
-    @keyframes techPop{0%{opacity:0;transform:scale(.6) translateY(18px)}60%{transform:scale(1.08) translateY(-3px)}100%{opacity:1;transform:scale(1) translateY(0)}}
     @keyframes techFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-5px) rotate(3deg)}}
-    @keyframes progressDraw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
     @keyframes dotPulse{0%{box-shadow:0 0 0 0 currentColor}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
     @keyframes formSlideIn{from{opacity:0;transform:translateY(20px) scale(.98)}to{opacity:1;transform:none}}
-    @keyframes labelFloat{from{transform:translateY(0);font-size:.68rem}to{transform:translateY(-20px);font-size:.6rem}}
-    @keyframes inputFocusGlow{0%{box-shadow:0 0 0 0 rgba(29,78,216,.3)}100%{box-shadow:0 0 0 4px rgba(29,78,216,.1)}}
-    @keyframes sendPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
-    @keyframes tiltIn{from{opacity:0;transform:rotateY(-12deg) translateX(-20px)}to{opacity:1;transform:rotateY(0deg) translateX(0)}}
-    @keyframes overlayReveal{from{clip-path:inset(0 100% 0 0);opacity:0}to{clip-path:inset(0 0% 0 0);opacity:1}}
     @keyframes glowPulse{0%,100%{opacity:.3}50%{opacity:.7}}
     @keyframes badgePop{0%{transform:scale(0) rotate(-10deg)}70%{transform:scale(1.1) rotate(2deg)}100%{transform:scale(1) rotate(0deg)}}
-    @keyframes tagSlide{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
     @keyframes processLine{from{height:0}to{height:100%}}
     @keyframes dotRing{0%{transform:scale(1);opacity:.6}100%{transform:scale(2);opacity:0}}
     @keyframes formFieldIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
 
-    /* ── SERVICE CARD: racing beam border (conic rotation) ── */
+    /* Spinner for loading state */
+    @keyframes spinnerRot{to{transform:rotate(360deg)}}
+    .spinner{
+      width:22px;height:22px;border-radius:50%;
+      border:2.5px solid rgba(255,255,255,.3);
+      border-top-color:#fff;
+      animation:spinnerRot .7s linear infinite;
+      display:inline-block;
+    }
+
+    /* Shake animation for error */
+    @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+    .shake{animation:shake .45s cubic-bezier(.36,.07,.19,.97)}
+
     @property --svc-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
     @keyframes svcRace{to{--svc-angle:360deg}}
 
     .svc-card{position:relative;border-radius:var(--r)}
-    /* Spinning conic beam — hidden at rest, shown on hover */
     .svc-card::before{
       content:'';pointer-events:none;
       position:absolute;inset:-1.5px;
@@ -120,36 +133,21 @@ const Styles = () => (
         #fff 340deg,
         var(--beam, #1d4ed8) 360deg
       );
-      opacity:0;
-      transition:opacity .35s;
-      z-index:0;
-      --svc-angle:0deg;
+      opacity:0;transition:opacity .35s;z-index:0;--svc-angle:0deg;
     }
-    .svc-card:hover::before{
-      opacity:1;
-      animation:svcRace 1.6s linear infinite;
-    }
-    /* Mask: inner rectangle covers the fill, revealing only the thin border */
+    .svc-card:hover::before{opacity:1;animation:svcRace 1.6s linear infinite}
     .svc-card::after{
-      content:'';pointer-events:none;
-      position:absolute;inset:1.5px;
-      border-radius:calc(var(--r) - 1px);
-      background:var(--card);
-      z-index:0;
+      content:'';pointer-events:none;position:absolute;inset:1.5px;
+      border-radius:calc(var(--r) - 1px);background:var(--card);z-index:0;
     }
     .svc-card > *{position:relative;z-index:1}
 
-    /* ── CONTACT FORM BOX: spinning conic spotlight border ── */
     @property --gb-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
     @keyframes gbSpin{to{--gb-angle:360deg}}
 
-    .gb-spin{
-      position:relative;
-      border-radius:calc(var(--r) + 2px);
-    }
+    .gb-spin{position:relative;border-radius:calc(var(--r) + 2px)}
     .gb-spin::before{
-      content:'';pointer-events:none;
-      position:absolute;inset:-1.5px;
+      content:'';pointer-events:none;position:absolute;inset:-1.5px;
       border-radius:calc(var(--r) + 3px);
       background:conic-gradient(
         from var(--gb-angle),
@@ -161,23 +159,17 @@ const Styles = () => (
         transparent 150deg,
         transparent 360deg
       );
-      animation:gbSpin 3.5s linear infinite;
-      z-index:0;
-      --gb-angle:0deg;
+      animation:gbSpin 3.5s linear infinite;z-index:0;--gb-angle:0deg;
     }
     .gb-spin::after{
-      content:'';pointer-events:none;
-      position:absolute;inset:1.5px;
-      border-radius:var(--r);
-      background:var(--card);
-      z-index:0;
+      content:'';pointer-events:none;position:absolute;inset:1.5px;
+      border-radius:var(--r);background:var(--card);z-index:0;
     }
     .gb-spin > *{position:relative;z-index:1}
 
-    /* ── Nav ── */
     .nav{
       position:fixed;top:0;left:0;right:0;z-index:300;
-      padding:0 clamp(16px,5vw,80px); height:var(--nh);
+      padding:0 clamp(16px,5vw,80px);height:var(--nh);
       display:flex;align-items:center;justify-content:space-between;
       transition:background .35s,box-shadow .35s;
     }
@@ -188,7 +180,6 @@ const Styles = () => (
     }
     html.dm .nav.stuck{--nav-bg:rgba(6,11,26,.93)}
 
-    /* ── Nav link ── */
     .nl{
       position:relative;background:none;border:none;cursor:pointer;
       color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:500;
@@ -202,14 +193,13 @@ const Styles = () => (
     .nl:hover{color:var(--blue)}
     .nl:hover::after{width:100%}
 
-    /* ── Buttons ── */
     .bp{
       position:relative;display:inline-flex;align-items:center;gap:8px;
       padding:12px 26px;border-radius:12px;border:none;cursor:pointer;
       font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:.87rem;
       color:#fff;letter-spacing:.02em;overflow:hidden;
       background:linear-gradient(130deg,var(--blue),#0ea5e9);
-      transition:transform .18s,box-shadow .18s;
+      transition:transform .18s,box-shadow .18s,opacity .18s;
       box-shadow:0 4px 18px rgba(29,78,216,.3);
     }
     .bp::before{
@@ -217,9 +207,10 @@ const Styles = () => (
       background:linear-gradient(130deg,rgba(255,255,255,.15),transparent);
       opacity:0;transition:opacity .22s;
     }
-    .bp:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(29,78,216,.42)}
-    .bp:hover::before{opacity:1}
-    .bp:active{transform:translateY(0) scale(.98)}
+    .bp:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 28px rgba(29,78,216,.42)}
+    .bp:hover:not(:disabled)::before{opacity:1}
+    .bp:active:not(:disabled){transform:translateY(0) scale(.98)}
+    .bp:disabled{opacity:.7;cursor:not-allowed;transform:none!important}
     html.dm .bp{color:#030818}
 
     .bg{
@@ -233,7 +224,6 @@ const Styles = () => (
     .bg:hover{background:rgba(29,78,216,.12);border-color:var(--blue);transform:translateY(-2px)}
     .bg:active{transform:translateY(0) scale(.98)}
 
-    /* ── Cards ── */
     .gc{
       position:relative;border-radius:var(--r);
       background:var(--card);border:1px solid var(--b);
@@ -242,7 +232,6 @@ const Styles = () => (
     }
     .gc:hover{transform:translateY(-5px);box-shadow:var(--shadow2);border-color:rgba(29,78,216,.2)}
 
-    /* ── Section tag ── */
     .st{
       display:inline-flex;align-items:center;gap:7px;
       padding:5px 14px;border-radius:99px;
@@ -251,19 +240,14 @@ const Styles = () => (
       font-family:'DM Sans',sans-serif;
     }
 
-    /* ── Filter pill ── */
     .fp{
       padding:7px 18px;border-radius:99px;border:1px solid var(--b);
       background:transparent;color:var(--muted);cursor:pointer;
       font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;transition:all .2s;
     }
-    .fp.on{
-      background:linear-gradient(130deg,var(--blue),#0ea5e9);
-      color:#fff;border-color:transparent;font-weight:600;
-    }
+    .fp.on{background:linear-gradient(130deg,var(--blue),#0ea5e9);color:#fff;border-color:transparent;font-weight:600}
     .fp:hover:not(.on){border-color:var(--blue);color:var(--blue);background:rgba(29,78,216,.05)}
 
-    /* ── Tech badge ── */
     .tb{
       display:flex;flex-direction:column;align-items:center;gap:8px;
       padding:18px 16px;border-radius:14px;
@@ -274,7 +258,6 @@ const Styles = () => (
     .tb:hover{border-color:var(--blue);transform:translateY(-5px) scale(1.04);box-shadow:0 14px 32px rgba(29,78,216,.13)}
     .tb span{font-size:.68rem;color:var(--muted);font-weight:600;letter-spacing:.04em;font-family:'DM Sans',sans-serif}
 
-    /* ── Input ── */
     .inp{
       width:100%;padding:12px 15px;border-radius:11px;
       background:var(--bg2);border:1.5px solid var(--b);
@@ -284,14 +267,14 @@ const Styles = () => (
     .inp:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(29,78,216,.09);background:var(--white)}
     .inp::placeholder{color:var(--muted2)}
 
-    /* ── Mode toggle ── */
+    /* Error border state */
+    .inp.err{border-color:#ef4444!important;box-shadow:0 0 0 3px rgba(239,68,68,.1)!important}
+
     .mt{
       width:52px;height:28px;border-radius:99px;
-      border:1.5px solid var(--b);
-      background:var(--bg2);
+      border:1.5px solid var(--b);background:var(--bg2);
       cursor:pointer;display:flex;align-items:center;padding:3px;
-      transition:background .35s, border-color .35s;
-      position:relative;
+      transition:background .35s, border-color .35s;position:relative;
     }
     html.dm .mt{background:var(--bg3);border-color:var(--b2)}
     .mk{
@@ -302,37 +285,28 @@ const Styles = () => (
       display:flex;align-items:center;justify-content:center;
       font-size:11px;line-height:1;
     }
-    html.dm .mk{
-      transform:translateX(24px);
-      background:linear-gradient(135deg,#1e3a5f,#2d4a7a);
-    }
+    html.dm .mk{transform:translateX(24px);background:linear-gradient(135deg,#1e3a5f,#2d4a7a)}
 
-    /* ── Project card ── */
     .pc{position:relative;overflow:hidden;border-radius:var(--r)}
     .pc-f{transition:opacity .3s,transform .3s}
     .pc:hover .pc-f{opacity:0;transform:scale(.97)}
     .pc-ov{
       position:absolute;inset:0;border-radius:var(--r);
       display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:28px;
-      opacity:0;transform:translateY(10px);
-      transition:opacity .32s,transform .32s;
+      opacity:0;transform:translateY(10px);transition:opacity .32s,transform .32s;
     }
     .pc:hover .pc-ov{opacity:1;transform:none}
 
-    /* ── Timeline ── */
     .tl{opacity:0;transform:translateX(-20px);transition:opacity .55s ease,transform .55s ease}
     .tl.v{opacity:1;transform:none}
 
-    /* ── Marquee ── */
     .mq-wrap{overflow:hidden;white-space:nowrap}
     .mq-inner{display:inline-flex;animation:marquee 32s linear infinite}
     .mq-inner:hover{animation-play-state:paused}
 
-    /* ── Stagger reveal ── */
     .sr{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
     .sr.v{opacity:1;transform:none}
 
-    /* ── Gradient border ── */
     .gb{position:relative;border-radius:calc(var(--r) + 2px);padding:1.5px}
     .gb::before{
       content:'';position:absolute;inset:0;border-radius:calc(var(--r) + 2px);
@@ -341,32 +315,23 @@ const Styles = () => (
     }
     .gb-in{background:var(--card);border-radius:var(--r);position:relative;z-index:1}
 
-    /* ── Hero blob ── */
-    .blob{
-      position:absolute;border-radius:50%;pointer-events:none;
-      filter:blur(80px);
-    }
+    .blob{position:absolute;border-radius:50%;pointer-events:none;filter:blur(80px)}
 
-    /* ── Stat card ── */
     .stat-card{
       background:var(--white);border:1px solid var(--b);border-radius:16px;
-      padding:22px 26px;text-align:center;
-      box-shadow:var(--shadow);
+      padding:22px 26px;text-align:center;box-shadow:var(--shadow);
       transition:transform .28s,box-shadow .28s;
     }
     .stat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow2)}
 
-    /* ── Service icon box ── */
     .svc-icon{
       width:50px;height:50px;border-radius:14px;
       display:flex;align-items:center;justify-content:center;
-      font-size:1.4rem;margin-bottom:16px;
-      transition:transform .28s;
+      font-size:1.4rem;margin-bottom:16px;transition:transform .28s;
     }
     .gc:hover .svc-icon{transform:scale(1.1) rotate(-4deg)}
     .pc:hover .proj-icon{transform:scale(1.18) rotate(-5deg) translateY(-2px)}
 
-    /* ── WhatsApp ── */
     .wa{
       position:fixed;bottom:28px;right:28px;z-index:600;
       width:56px;height:56px;border-radius:50%;background:#25d366;
@@ -377,73 +342,47 @@ const Styles = () => (
     .wa:hover{transform:scale(1.12)!important;animation:none}
     .war{position:absolute;inset:-7px;border-radius:50%;border:2px solid #25d366;animation:pulseRing 2.2s ease-out infinite}
 
-    /* ── TYPER FIX: stable container ── */
-    .typer-line{
-      display:block;
-      min-height:1.15em;
-      /* Reserve space so nothing jumps on word change */
-    }
-    .typer-word{
-      display:inline-block;
-      min-width:0;
-    }
+    .typer-line{display:block;min-height:1.15em}
+    .typer-word{display:inline-block;min-width:0}
     .typer-cursor{
-      display:inline-block;
-      width:3px;height:.8em;
-      background:var(--blue);
-      border-radius:2px;
-      vertical-align:middle;
-      margin-left:3px;
+      display:inline-block;width:3px;height:.8em;background:var(--blue);
+      border-radius:2px;vertical-align:middle;margin-left:3px;
       animation:cursorBlink .9s step-end infinite;
     }
 
-    /* ── Counter ── */
     .cval{
       font-family:'Bricolage Grotesque',sans-serif;
       font-size:clamp(2rem,3.5vw,2.8rem);
-      font-weight:800;line-height:1;
-      display:inline-block;
+      font-weight:800;line-height:1;display:inline-block;
     }
 
-    /* ── Service card shimmer ── */
-    .svc-shimmer{
-      position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none;
-    }
+    .svc-shimmer{position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none}
     .svc-shimmer::after{
       content:'';position:absolute;top:0;left:0;width:40%;height:100%;
       background:linear-gradient(105deg,transparent,rgba(255,255,255,.14),transparent);
-      transform:translateX(-100%);
-      transition:none;
+      transform:translateX(-100%);transition:none;
     }
-    .gc:hover .svc-shimmer::after{
-      animation:shimmerLine .7s ease forwards;
-    }
+    .gc:hover .svc-shimmer::after{animation:shimmerLine .7s ease forwards}
 
-    /* ── Tech badge float on hover ── */
     .tb:hover .tb-icon{animation:techFloat 1.8s ease-in-out infinite}
     .tb-icon{display:inline-block;transition:transform .2s}
 
-    /* ── Process dot ring ripple ── */
     .proc-dot{position:relative}
     .proc-dot::after{
       content:'';position:absolute;inset:-5px;border-radius:50%;
-      border:2px solid currentColor;opacity:0;
-      pointer-events:none;
+      border:2px solid currentColor;opacity:0;pointer-events:none;
     }
     .gc:hover .proc-dot::after{animation:dotRing .7s ease forwards}
 
-    /* ── Form field animated underline ── */
     .inp-wrap{position:relative}
     .inp-wrap::after{
       content:'';position:absolute;bottom:0;left:8px;right:8px;height:2px;
       background:linear-gradient(to right,var(--blue),var(--cyan));
       border-radius:99px;transform:scaleX(0);transform-origin:left;
-      transition:transform .3s cubic-bezier(.4,0,.2,1);
-      pointer-events:none;
+      transition:transform .3s cubic-bezier(.4,0,.2,1);pointer-events:none;
     }
     .inp-wrap:focus-within::after{transform:scaleX(1)}
 
-    /* ── Send button shimmer ── */
     .send-btn{position:relative;overflow:hidden}
     .send-btn::after{
       content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;
@@ -451,16 +390,9 @@ const Styles = () => (
       animation:shimmerLine 2.2s ease-in-out infinite 1s;
     }
 
-    /* ── Project card tilt perspective ── */
-    .pc-wrap{
-      perspective:900px;
-    }
-    .pc-inner{
-      transform-style:preserve-3d;
-      transition:transform .04s linear;
-    }
+    .pc-wrap{perspective:900px}
+    .pc-inner{transform-style:preserve-3d;transition:transform .04s linear}
 
-    /* ── Responsive ── */
     @media(max-width:768px){.dm-el{display:none!important}}
     @media(min-width:769px){.mm-el{display:none!important}}
     @media(max-width:580px){.sm-1{grid-template-columns:1fr!important}}
@@ -490,18 +422,14 @@ const Particles = memo(({ dark }) => {
         p.x = (p.x + p.vx + c.width) % c.width;
         p.y = (p.y + p.vy + c.height) % c.height;
         ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = dark
-          ? `hsla(${p.hue},75%,65%,${p.a})`
-          : `hsla(${p.hue},70%,48%,${p.a})`;
+        ctx.fillStyle = dark ? `hsla(${p.hue},75%,65%,${p.a})` : `hsla(${p.hue},70%,48%,${p.a})`;
         ctx.fill();
       });
       for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
         const d = Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y);
         if (d < 100) {
           ctx.beginPath(); ctx.lineWidth = .4;
-          ctx.strokeStyle = dark
-            ? `rgba(96,165,250,${.09 * (1 - d / 100)})`
-            : `rgba(29,78,216,${.09 * (1 - d / 100)})`;
+          ctx.strokeStyle = dark ? `rgba(96,165,250,${.09*(1-d/100)})` : `rgba(29,78,216,${.09*(1-d/100)})`;
           ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y); ctx.stroke();
         }
       }
@@ -514,9 +442,7 @@ const Particles = memo(({ dark }) => {
 });
 
 /* ═══════════════════════════════════════════════════════════════
-   TYPING EFFECT — FIXED (no layout shift, no blur)
-   Key fix: the parent line has a stable height; only the text content
-   changes, never the container dimensions.
+   TYPING EFFECT
 ═══════════════════════════════════════════════════════════════ */
 const Typer = memo(({ words }) => {
   const [idx, setIdx] = useState(0);
@@ -527,25 +453,17 @@ const Typer = memo(({ words }) => {
   useEffect(() => {
     const currentWord = words[idx];
     const speed = isDeleting ? 35 : 80;
-
     timeoutRef.current = setTimeout(() => {
       if (!isDeleting) {
         const next = currentWord.slice(0, txt.length + 1);
         setTxt(next);
-        if (next === currentWord) {
-          // Pause then start deleting
-          timeoutRef.current = setTimeout(() => setIsDeleting(true), 1800);
-        }
+        if (next === currentWord) timeoutRef.current = setTimeout(() => setIsDeleting(true), 1800);
       } else {
         const next = currentWord.slice(0, txt.length - 1);
         setTxt(next);
-        if (next === "") {
-          setIsDeleting(false);
-          setIdx(i => (i + 1) % words.length);
-        }
+        if (next === "") { setIsDeleting(false); setIdx(i => (i + 1) % words.length); }
       }
     }, speed);
-
     return () => clearTimeout(timeoutRef.current);
   }, [txt, isDeleting, idx, words]);
 
@@ -558,9 +476,7 @@ const Typer = memo(({ words }) => {
 });
 
 /* ═══════════════════════════════════════════════════════════════
-   ANIMATED COUNTER — FIXED (stable, no re-trigger on parent render)
-   Key fix: IntersectionObserver only fires once; value is stored in ref
-   during animation so parent re-renders don't reset it.
+   ANIMATED COUNTER
 ═══════════════════════════════════════════════════════════════ */
 const Counter = memo(({ to, suf = "" }) => {
   const [display, setDisplay] = useState(0);
@@ -569,48 +485,28 @@ const Counter = memo(({ to, suf = "" }) => {
   const rafRef = useRef(null);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting || started.current) return;
-        started.current = true;
-
-        const dur = 1800;
-        let startTime = null;
-
-        const tick = (ts) => {
-          if (!startTime) startTime = ts;
-          const elapsed = ts - startTime;
-          const progress = Math.min(elapsed / dur, 1);
-          // Ease-out quart
-          const eased = 1 - Math.pow(1 - progress, 4);
-          const val = Math.round(eased * to);
-          setDisplay(val);
-          if (progress < 1) {
-            rafRef.current = requestAnimationFrame(tick);
-          }
-        };
-
-        rafRef.current = requestAnimationFrame(tick);
-      },
-      { threshold: 0.4 }
-    );
-
+    const el = ref.current; if (!el) return;
+    const obs = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting || started.current) return;
+      started.current = true;
+      const dur = 1800; let startTime = null;
+      const tick = (ts) => {
+        if (!startTime) startTime = ts;
+        const elapsed = ts - startTime;
+        const progress = Math.min(elapsed / dur, 1);
+        const eased = 1 - Math.pow(1 - progress, 4);
+        setDisplay(Math.round(eased * to));
+        if (progress < 1) rafRef.current = requestAnimationFrame(tick);
+      };
+      rafRef.current = requestAnimationFrame(tick);
+    }, { threshold: 0.4 });
     obs.observe(el);
-    return () => {
-      obs.disconnect();
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
+    return () => { obs.disconnect(); if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, [to]);
 
   return (
-    <span
-      ref={ref}
-      className="cval g1"
-      style={{ animation: started.current ? "none" : "countIn .6s ease both" }}
-    >
+    <span ref={ref} className="cval g1"
+      style={{ animation: started.current ? "none" : "countIn .6s ease both" }}>
       {display}{suf}
     </span>
   );
@@ -634,10 +530,8 @@ const Stagger = ({ children, gap = .1, style = {}, className = "" }) => {
         <div key={i} style={{
           opacity: v ? 1 : 0,
           transform: v ? "none" : "translateY(20px)",
-          transition: `opacity .6s ease ${i * gap}s, transform .6s ease ${i * gap}s`
-        }}>
-          {child}
-        </div>
+          transition: `opacity .6s ease ${i * gap}s, transform .6s ease ${i * gap}s`,
+        }}>{child}</div>
       ))}
     </div>
   );
@@ -658,7 +552,7 @@ const useRev = (th = .1) => {
 };
 
 /* ═══════════════════════════════════════════════════════════════
-   SCROLL REVEAL CARD — individual card entrance
+   REVEAL CARD
 ═══════════════════════════════════════════════════════════════ */
 const RevealCard = ({ children, delay = 0, style = {}, className = "" }) => {
   const ref = useRef(null);
@@ -669,23 +563,17 @@ const RevealCard = ({ children, delay = 0, style = {}, className = "" }) => {
     return () => obs.disconnect();
   }, []);
   return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        ...style,
-        opacity: vis ? 1 : 0,
-        transform: vis ? "none" : "translateY(36px) scale(.97)",
-        transition: `opacity .6s ease ${delay}s, transform .6s cubic-bezier(.2,.8,.2,1) ${delay}s`,
-      }}
-    >
-      {children}
-    </div>
+    <div ref={ref} className={className} style={{
+      ...style,
+      opacity: vis ? 1 : 0,
+      transform: vis ? "none" : "translateY(36px) scale(.97)",
+      transition: `opacity .6s ease ${delay}s, transform .6s cubic-bezier(.2,.8,.2,1) ${delay}s`,
+    }}>{children}</div>
   );
 };
 
 /* ═══════════════════════════════════════════════════════════════
-   TILT CARD — 3D mouse-tracking tilt for project cards
+   TILT CARD
 ═══════════════════════════════════════════════════════════════ */
 const TiltCard = ({ children, style = {}, className = "" }) => {
   const ref = useRef(null);
@@ -695,7 +583,7 @@ const TiltCard = ({ children, style = {}, className = "" }) => {
     const x = ((e.clientX - rect.left) / rect.width  - .5) * 14;
     const y = ((e.clientY - rect.top)  / rect.height - .5) * -14;
     el.style.transform = `perspective(900px) rotateX(${y}deg) rotateY(${x}deg) scale(1.03)`;
-    el.style.boxShadow = `${-x * .8}px ${y * .8}px 40px rgba(29,78,216,.18)`;
+    el.style.boxShadow = `${-x*.8}px ${y*.8}px 40px rgba(29,78,216,.18)`;
   }, []);
   const handleLeave = useCallback(() => {
     const el = ref.current; if (!el) return;
@@ -703,20 +591,16 @@ const TiltCard = ({ children, style = {}, className = "" }) => {
     el.style.boxShadow = "";
   }, []);
   return (
-    <div
-      ref={ref}
-      className={className}
+    <div ref={ref} className={className}
       style={{ ...style, transition:"transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s" }}
-      onMouseMove={handleMove}
-      onMouseLeave={handleLeave}
-    >
+      onMouseMove={handleMove} onMouseLeave={handleLeave}>
       {children}
     </div>
   );
 };
 
 /* ═══════════════════════════════════════════════════════════════
-   ANIMATED TECH BADGE
+   TECH BADGE
 ═══════════════════════════════════════════════════════════════ */
 const TechBadge = memo(({ label, emoji, delay = 0 }) => {
   const ref = useRef(null);
@@ -728,31 +612,26 @@ const TechBadge = memo(({ label, emoji, delay = 0 }) => {
     return () => obs.disconnect();
   }, []);
   return (
-    <div
-      ref={ref}
-      className="tb"
+    <div ref={ref} className="tb"
       style={{
         opacity: vis ? 1 : 0,
         transform: vis ? "none" : "scale(.6) translateY(18px)",
         transition: `opacity .5s ease ${delay}s, transform .5s cubic-bezier(.34,1.56,.64,1) ${delay}s`,
       }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <span
-        className="tb-icon"
-        style={{
-          fontSize:"1.9rem",display:"inline-block",
-          animation: hovered ? "techFloat 1.8s ease-in-out infinite" : "none",
-          transition:"transform .2s",
-        }}
-      >{emoji}</span>
+      onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+      <span className="tb-icon" style={{
+        fontSize:"1.9rem",display:"inline-block",
+        animation: hovered ? "techFloat 1.8s ease-in-out infinite" : "none",
+        transition:"transform .2s",
+      }}>{emoji}</span>
       <span>{label}</span>
     </div>
   );
 });
 
-
+/* ═══════════════════════════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════════════════════════ */
 const SERVICES = [
   { icon:"📱", t:"Flutter App Dev",   a:"#1d4ed8", bg:"#dbeafe", desc:"Cross-platform mobile apps with silky 60 fps animations, native device APIs, and pixel-perfect UI for iOS & Android.", tags:["Dart","Flutter","Firebase"] },
   { icon:"🌐", t:"MERN Stack Web",    a:"#0e7490", bg:"#cffafe", desc:"End-to-end web applications — MongoDB, Express, React and Node.js architected to scale from MVP to millions of users.", tags:["React","Node.js","MongoDB"] },
@@ -772,11 +651,35 @@ const PROJECTS = [
 ];
 
 const STACK = [
-  {l:"React",e:"⚛️"},{l:"Node.js",e:"🟢"},{l:"MongoDB",e:"🍃"},
-  {l:"Flutter",e:"🐦"},{l:"Python",e:"🐍"},{l:"TypeScript",e:"🔷"},
-  {l:"Docker",e:"🐳"},{l:"AWS",e:"☁️"},{l:"GraphQL",e:"◈"},
-  {l:"Firebase",e:"🔥"},{l:"Redis",e:"🔴"},{l:"PostgreSQL",e:"🐘"},
+  { l: "React", e: "⚛️" },
+  { l: "Next.js", e: "▲" },
+  { l: "Node.js", e: "🟢" },
+  { l: "MongoDB", e: "🍃" },
+  { l: "Flutter", e: "🐦" },
+  { l: "Python", e: "🐍" },
+  { l: "TypeScript", e: "🔷" },
+  { l: "Tailwind CSS", e: "💨" },
+  { l: "Docker", e: "🐳" },
+  { l: "AWS", e: "☁️" },
+  { l: "GraphQL", e: "◈" },
+  { l: "Firebase", e: "🔥" },
+  { l: "Redis", e: "🔴" },
+  { l: "PostgreSQL", e: "🐘" },
+
+  // Added Technologies
+  { l: "Spring Boot", e: "🌱" },
+  { l: ".NET", e: "💜" },
+  { l: "Angular", e: "🅰️" },
+  { l: "Flask", e: "🍶" },
+  { l: "Kubernetes", e: "☸️" },
+  { l: "Java", e: "☕" }
 ];
+
+
+
+
+
+
 
 const PROCESS = [
   {n:"01",icon:"🔍",t:"Discovery",   d:"We deep-dive into your goals, users and market to produce a crystal-clear project brief and scope.",               c:"#1d4ed8",bg:"#dbeafe"},
@@ -802,6 +705,11 @@ const STATS = [
 const MARQUEE = ["React","Node.js","Flutter","Python","TypeScript","MongoDB","AWS","Docker","Firebase","GraphQL","Redis","Figma","TensorFlow","Kubernetes","PostgreSQL","FastAPI"];
 
 /* ═══════════════════════════════════════════════════════════════
+   BLANK FORM STATE
+═══════════════════════════════════════════════════════════════ */
+const BLANK_FORM = { name:"", email:"", project:"", msg:"" };
+
+/* ═══════════════════════════════════════════════════════════════
    APP
 ═══════════════════════════════════════════════════════════════ */
 export default function NovaTech() {
@@ -810,20 +718,19 @@ export default function NovaTech() {
   const [tIdx, setTIdx]         = useState(0);
   const [scrolled, setScrolled] = useState(false);
   const [menu, setMenu]         = useState(false);
-  const [form, setForm]         = useState({ name:"",email:"",project:"",msg:"" });
-  const [sent, setSent]         = useState(false);
-  const [hoverStep, setHoverStep] = useState(null);
+  const [form, setForm]         = useState({ ...BLANK_FORM });
 
+  // ── Form status: "idle" | "sending" | "sent" | "error"
+  const [formStatus, setFormStatus] = useState("idle");
+  const [errorMsg, setErrorMsg]     = useState("");
+  const formBoxRef = useRef(null);
+
+  const [hoverStep, setHoverStep] = useState(null);
   const [tlRef, tlVis] = useRev(.07);
 
-  // ── DARK MODE FIX: apply class to <html> so body + ALL elements get vars ──
   useEffect(() => {
     const root = document.documentElement;
-    if (dark) {
-      root.classList.add("dm");
-    } else {
-      root.classList.remove("dm");
-    }
+    dark ? root.classList.add("dm") : root.classList.remove("dm");
   }, [dark]);
 
   useEffect(() => {
@@ -844,8 +751,66 @@ export default function NovaTech() {
     setMenu(false);
   }, []);
 
-  // Typing words — memoized to prevent re-render reference change
   const typerWords = ["Scale Globally","Drive Revenue","Wow Every User","Perform Flawlessly","Win Markets"];
+
+
+  /* ─────────────────────────────────────────────────────────────
+     ✅ EMAILJS SEND — uses the EmailJS REST API (no SDK needed)
+     Template variables expected: from_name, from_email,
+                                  project_type, message
+  ───────────────────────────────────────────────────────────── */
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setFormStatus("sending");
+    setErrorMsg("");
+
+    try {
+      const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          service_id:  EMAILJS_SERVICE_ID,
+          template_id: EMAILJS_TEMPLATE_ID,
+          user_id:     EMAILJS_PUBLIC_KEY,
+          template_params: {
+            from_name:    form.name,
+            from_email:   form.email,
+            project_type: form.project || "Not specified",
+            message:      form.msg,
+          },
+        }),
+      });
+
+      if (res.ok) {
+        // ✅ Success: show success screen, clear all fields
+        setFormStatus("sent");
+        setForm({ ...BLANK_FORM });
+
+        // Auto-reset back to the form after 5 seconds
+        setTimeout(() => setFormStatus("idle"), 5000);
+      } else {
+        const text = await res.text();
+        throw new Error(text || `Error ${res.status}`);
+      }
+    } catch (err) {
+      // ❌ Error: shake the form box, show message, keep fields filled
+      setFormStatus("error");
+      setErrorMsg(
+        err.message.includes("service_id") || err.message.includes("template")
+          ? "EmailJS is not configured yet. Replace the placeholder IDs at the top of the file."
+          : err.message || "Something went wrong. Please try again."
+      );
+
+      // Shake the form box
+      if (formBoxRef.current) {
+        formBoxRef.current.classList.add("shake");
+        setTimeout(() => formBoxRef.current?.classList.remove("shake"), 500);
+      }
+
+      // Auto-clear error after 6 seconds so user can retry
+      setTimeout(() => setFormStatus("idle"), 6000);
+    }
+  };
 
   return (
     <div style={{ minHeight:"100vh" }}>
@@ -853,17 +818,13 @@ export default function NovaTech() {
 
       {/* ══════════════  NAV  ══════════════════════════════════════ */}
       <nav className={`nav${scrolled?" stuck":""}`}>
-        <div
-          style={{ display:"flex",alignItems:"center",gap:10,cursor:"pointer" }}
-          onClick={() => window.scrollTo({top:0,behavior:"smooth"})}
-        >
-          <div style={{
+        <div style={{ display:"flex",alignItems:"center",gap:10,cursor:"pointer" }}
+          onClick={() => window.scrollTo({top:0,behavior:"smooth"})}>
+          <img src={logo} alt="NovaTech Logo" style={{
             width:36,height:36,borderRadius:10,
-            background:"linear-gradient(135deg,var(--blue),#0ea5e9)",
-            display:"flex",alignItems:"center",justifyContent:"center",
-            fontFamily:"'Bricolage Grotesque',sans-serif",fontWeight:800,color:"#fff",fontSize:"1rem",
             boxShadow:"0 3px 14px rgba(29,78,216,.32)",
-          }}>N</div>
+            objectFit:"cover"
+          }} />
           <span style={{ fontFamily:"'Bricolage Grotesque',sans-serif",fontWeight:800,fontSize:"1.15rem",color:"var(--text)" }}>
             Nova<span className="g1">Tech</span>
           </span>
@@ -882,11 +843,8 @@ export default function NovaTech() {
           <button className="bp dm-el" style={{ padding:"9px 20px",fontSize:".82rem" }} onClick={() => goto("contact")}>
             Hire Us ↗
           </button>
-          <button
-            className="mm-el"
-            onClick={() => setMenu(m => !m)}
-            style={{ background:"none",border:"none",cursor:"pointer",color:"var(--text)",fontSize:"1.3rem",lineHeight:1,padding:"4px" }}
-          >
+          <button className="mm-el" onClick={() => setMenu(m => !m)}
+            style={{ background:"none",border:"none",cursor:"pointer",color:"var(--text)",fontSize:"1.3rem",lineHeight:1,padding:"4px" }}>
             {menu ? "✕" : "☰"}
           </button>
         </div>
@@ -896,8 +854,7 @@ export default function NovaTech() {
       {menu && (
         <div style={{
           position:"fixed",top:"var(--nh)",left:0,right:0,zIndex:299,
-          background:"var(--bg)",
-          backdropFilter:"blur(24px)",
+          background:"var(--bg)",backdropFilter:"blur(24px)",
           borderBottom:"1px solid var(--b)",padding:"24px 28px 32px",
           display:"flex",flexDirection:"column",gap:22,
           boxShadow:"0 20px 60px rgba(29,78,216,.1)",
@@ -918,38 +875,26 @@ export default function NovaTech() {
         overflow:"hidden",paddingTop:"var(--nh)",
         background:"radial-gradient(ellipse 90% 70% at 50% 0%,var(--bg3) 0%,var(--bg) 70%)",
       }}>
-        {/* Blobs — always rendered, opacity controlled by CSS vars */}
         <div className="blob" style={{ width:"44vw",height:"44vw",top:"-8%",left:"58%",background:"radial-gradient(circle,var(--bg3),transparent)",animation:"float 14s ease-in-out infinite" }}/>
         <div className="blob" style={{ width:"32vw",height:"32vw",top:"28%",left:"-4%",background:"radial-gradient(circle,var(--bg2),transparent)",animation:"float 18s ease-in-out infinite reverse" }}/>
         <div className="blob" style={{ width:"26vw",height:"26vw",bottom:"8%",right:"4%",background:"radial-gradient(circle,var(--bg3),transparent)",animation:"float 22s ease-in-out infinite" }}/>
 
         <Particles dark={dark} />
 
-        {/* Orbit rings — decorative */}
         <div className="dm-el" style={{ position:"absolute",right:"-60px",top:"50%",transform:"translateY(-50%)",width:320,height:320,pointerEvents:"none",zIndex:0 }}>
-          <div style={{
-            position:"absolute",inset:0,border:"1px solid var(--b)",
-            borderRadius:"50%",animation:"orbitSpin 22s linear infinite",transformOrigin:"center",
-          }}>
+          <div style={{ position:"absolute",inset:0,border:"1px solid var(--b)",borderRadius:"50%",animation:"orbitSpin 22s linear infinite",transformOrigin:"center" }}>
             <div style={{ position:"absolute",top:-4,left:"50%",width:8,height:8,borderRadius:"50%",background:"var(--blue)",transform:"translateX(-50%)",boxShadow:"0 0 12px var(--blue)" }}/>
           </div>
-          <div style={{
-            position:"absolute",inset:"18%",border:"1px solid var(--b)",
-            borderRadius:"50%",animation:"orbitSpinR 30s linear infinite",transformOrigin:"center",
-          }}>
+          <div style={{ position:"absolute",inset:"18%",border:"1px solid var(--b)",borderRadius:"50%",animation:"orbitSpinR 30s linear infinite",transformOrigin:"center" }}>
             <div style={{ position:"absolute",bottom:-3,right:"12%",width:6,height:6,borderRadius:"50%",background:"var(--purple)",boxShadow:"0 0 8px var(--purple)" }}/>
           </div>
         </div>
 
-        {/* Floating code snippet */}
         <div className="dm-el" style={{
           position:"absolute",left:"3%",bottom:"18%",
-          background:"var(--card)",
-          border:"1px solid var(--b)",borderRadius:14,
-          padding:"14px 18px",backdropFilter:"blur(20px)",
-          boxShadow:"var(--shadow)",
-          animation:"floatR 7s ease-in-out infinite",pointerEvents:"none",
-          zIndex:1,
+          background:"var(--card)",border:"1px solid var(--b)",borderRadius:14,
+          padding:"14px 18px",backdropFilter:"blur(20px)",boxShadow:"var(--shadow)",
+          animation:"floatR 7s ease-in-out infinite",pointerEvents:"none",zIndex:1,
         }}>
           <div style={{ fontFamily:"'JetBrains Mono',monospace",fontSize:".7rem",lineHeight:2 }}>
             <div><span style={{color:"var(--purple)"}}>const</span> <span style={{color:"var(--blue)"}}>app</span> = <span style={{color:"var(--cyan)"}}>NovaTech</span>()</div>
@@ -958,13 +903,10 @@ export default function NovaTech() {
           </div>
         </div>
 
-        {/* Hero content */}
         <div style={{
           position:"relative",zIndex:1,textAlign:"center",
-          maxWidth:900,padding:"0 22px",
-          animation:"fadeUp 1s ease both",
+          maxWidth:900,padding:"0 22px",animation:"fadeUp 1s ease both",
         }}>
-          {/* Live badge */}
           <div style={{ marginBottom:26,display:"flex",justifyContent:"center" }}>
             <span className="st" style={{ animation:"scaleIn .7s ease .15s both" }}>
               <span style={{ width:6,height:6,borderRadius:"50%",background:"var(--blue)",display:"inline-block",animation:"pulse 2s ease-in-out infinite",boxShadow:"0 0 7px var(--blue)" }}/>
@@ -972,34 +914,16 @@ export default function NovaTech() {
             </span>
           </div>
 
-          {/* ── FIXED HERO HEADLINE ──
-              The entire two-line heading is in ONE block. The second line
-              uses a stable min-height wrapper so no layout shift occurs when
-              the typed word changes length. */}
           <div style={{ animation:"fadeUp 1s ease .08s both" }}>
-            <h1 style={{
-              fontSize:"clamp(2.4rem,6vw,4.8rem)",fontWeight:800,
-              lineHeight:1.08,color:"var(--text)",
-            }}>
+            <h1 style={{ fontSize:"clamp(2.4rem,6vw,4.8rem)",fontWeight:800,lineHeight:1.08,color:"var(--text)" }}>
               We Craft Apps That
             </h1>
-            {/* ── Typer line: fixed height prevents layout shift ── */}
-            <h1 style={{
-              fontSize:"clamp(2.4rem,6vw,4.8rem)",fontWeight:800,
-              lineHeight:1.12,marginBottom:28,
-              /* min-height = 1 line of this font size, prevents collapse */
-              minHeight:"1.15em",
-              display:"block",
-            }}>
+            <h1 style={{ fontSize:"clamp(2.4rem,6vw,4.8rem)",fontWeight:800,lineHeight:1.12,marginBottom:28,minHeight:"1.15em",display:"block" }}>
               <Typer words={typerWords} />
             </h1>
           </div>
 
-          <p style={{
-            fontSize:"clamp(.93rem,1.7vw,1.08rem)",color:"var(--muted)",
-            maxWidth:540,margin:"0 auto 44px",lineHeight:1.85,
-            animation:"fadeUp 1s ease .22s both",
-          }}>
+          <p style={{ fontSize:"clamp(.93rem,1.7vw,1.08rem)",color:"var(--muted)",maxWidth:540,margin:"0 auto 44px",lineHeight:1.85,animation:"fadeUp 1s ease .22s both" }}>
             NovaTech builds high-performance web & mobile products using MERN, Flutter and Python — from early MVP all the way to enterprise scale.
           </p>
 
@@ -1008,50 +932,34 @@ export default function NovaTech() {
             <button className="bg" onClick={() => goto("contact")}>Start a Project</button>
           </div>
 
-          {/* Stat cards — counters are memoized, won't reset on dark toggle or other state changes */}
-          <div style={{
-            display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap",
-            marginTop:68,animation:"fadeUp 1s ease .42s both",
-          }}>
+          <div style={{ display:"flex",gap:14,justifyContent:"center",flexWrap:"wrap",marginTop:68,animation:"fadeUp 1s ease .42s both" }}>
             {STATS.map(s => (
               <div key={s.label} className="stat-card" style={{ minWidth:136 }}>
                 <div style={{ fontSize:"1.3rem",marginBottom:6 }}>{s.icon}</div>
                 <Counter to={s.to} suf={s.suf} />
-                <div style={{ fontSize:".68rem",color:"var(--muted)",marginTop:6,letterSpacing:".06em",textTransform:"uppercase",fontWeight:600 }}>
-                  {s.label}
-                </div>
+                <div style={{ fontSize:".68rem",color:"var(--muted)",marginTop:6,letterSpacing:".06em",textTransform:"uppercase",fontWeight:600 }}>{s.label}</div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Scroll indicator */}
-        <div style={{
-          position:"absolute",bottom:28,left:"50%",transform:"translateX(-50%)",
-          display:"flex",flexDirection:"column",alignItems:"center",gap:7,
-          animation:"fadeUp 2s ease 1s both",
-          pointerEvents:"none",
-        }}>
+        <div style={{ position:"absolute",bottom:28,left:"50%",transform:"translateX(-50%)",display:"flex",flexDirection:"column",alignItems:"center",gap:7,animation:"fadeUp 2s ease 1s both",pointerEvents:"none" }}>
           <span style={{ fontSize:".6rem",color:"var(--muted2)",letterSpacing:".14em",textTransform:"uppercase",fontWeight:600 }}>Scroll</span>
-          <div style={{ width:1,height:44,background:`linear-gradient(to bottom,var(--blue),transparent)` }}/>
+          <div style={{ width:1,height:44,background:"linear-gradient(to bottom,var(--blue),transparent)" }}/>
         </div>
       </section>
 
+
       {/* ══════════════  MARQUEE STRIP  ════════════════════════════ */}
-      <div style={{
-        borderTop:"1px solid var(--b)",borderBottom:"1px solid var(--b)",
-        background:"var(--bg2)",
-        padding:"12px 0",overflow:"hidden",
-      }}>
+      <div style={{ borderTop:"1px solid var(--b)",borderBottom:"1px solid var(--b)",background:"var(--bg2)",padding:"12px 0",overflow:"hidden",marginTop:80 }}>
         <div className="mq-wrap">
           <div className="mq-inner">
             {[...MARQUEE,...MARQUEE].map((item,i) => (
               <span key={i} style={{
-                display:"inline-flex",alignItems:"center",gap:10,
-                padding:"0 24px",fontSize:".76rem",fontWeight:700,
+                display:"inline-flex",alignItems:"center",gap:10,padding:"0 24px",
+                fontSize:".76rem",fontWeight:700,
                 color:[SERVICES[0].a,SERVICES[1].a,SERVICES[2].a,SERVICES[3].a,SERVICES[4].a,SERVICES[5].a][i%6],
-                letterSpacing:".07em",textTransform:"uppercase",
-                fontFamily:"'DM Sans',sans-serif",
+                letterSpacing:".07em",textTransform:"uppercase",fontFamily:"'DM Sans',sans-serif",
               }}>
                 <span style={{ fontSize:".4rem",opacity:.45 }}>◆</span>
                 {item}
@@ -1066,29 +974,21 @@ export default function NovaTech() {
         <div style={{ textAlign:"center",marginBottom:60 }}>
           <Stagger gap={0.11} style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:14 }}>
             <span className="st">✦ What We Do</span>
-            <h2 style={{ fontSize:"clamp(1.75rem,3.8vw,3rem)",fontWeight:800 }}>
-              Services That <span className="g2">Deliver Results</span>
-            </h2>
-            <p style={{ color:"var(--muted)",maxWidth:490,lineHeight:1.85,fontSize:".97rem" }}>
-              Full-stack expertise across every layer of the modern tech stack — built to scale, designed to impress.
-            </p>
+            <h2 style={{ fontSize:"clamp(1.75rem,3.8vw,3rem)",fontWeight:800 }}>Services That <span className="g2">Deliver Results</span></h2>
+            <p style={{ color:"var(--muted)",maxWidth:490,lineHeight:1.85,fontSize:".97rem" }}>Full-stack expertise across every layer of the modern tech stack — built to scale, designed to impress.</p>
           </Stagger>
         </div>
-
         <div className="sm-1" style={{ display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))",gap:20,maxWidth:1100,margin:"0 auto" }}>
           {SERVICES.map((s, i) => (
             <RevealCard key={s.t} delay={i * 0.08} className="gc svc-card" style={{ padding:"28px 26px",overflow:"hidden",position:"relative","--beam":s.a }}>
-              {/* Animated glow orb */}
               <div style={{ position:"absolute",top:-40,right:-40,width:130,height:130,borderRadius:"50%",background:`radial-gradient(circle,${s.a}20,transparent 70%)`,pointerEvents:"none",animation:"glowPulse 3s ease-in-out infinite" }}/>
-              {/* Shimmer overlay */}
               <div className="svc-shimmer"/>
-              {/* Icon with bounce on card hover */}
               <div className="svc-icon" style={{ background:s.bg,border:`1px solid ${s.a}22`,cursor:"default" }}>{s.icon}</div>
               <h3 style={{ fontSize:"1.05rem",fontWeight:700,marginBottom:10,color:s.a }}>{s.t}</h3>
               <p style={{ color:"var(--muted)",fontSize:".87rem",lineHeight:1.8,marginBottom:16 }}>{s.desc}</p>
               <div style={{ display:"flex",flexWrap:"wrap",gap:5 }}>
                 {s.tags.map((t, ti) => (
-                  <span key={t} style={{ padding:"3px 10px",borderRadius:99,fontSize:".68rem",fontWeight:700,background:s.bg,color:s.a,border:`1px solid ${s.a}22`,animation:`badgePop .4s cubic-bezier(.34,1.56,.64,1) ${0.3 + ti * 0.07}s both` }}>{t}</span>
+                  <span key={t} style={{ padding:"3px 10px",borderRadius:99,fontSize:".68rem",fontWeight:700,background:s.bg,color:s.a,border:`1px solid ${s.a}22`,animation:`badgePop .4s cubic-bezier(.34,1.56,.64,1) ${0.3+ti*0.07}s both` }}>{t}</span>
                 ))}
               </div>
             </RevealCard>
@@ -1097,31 +997,19 @@ export default function NovaTech() {
       </section>
 
       {/* ══════════════  PROJECTS  ═════════════════════════════════ */}
-      <section id="projects" style={{
-        padding:"80px clamp(18px,5vw,80px)",
-        background:"var(--bg2)",
-        position:"relative",overflow:"hidden",
-      }}>
-        <div style={{
-          position:"absolute",inset:0,
-          backgroundImage:"radial-gradient(circle at 1px 1px,var(--b) 1px,transparent 0)",
-          backgroundSize:"38px 38px",pointerEvents:"none",
-        }}/>
-
+      <section id="projects" style={{ padding:"80px clamp(18px,5vw,80px)",background:"var(--bg2)",position:"relative",overflow:"hidden" }}>
+        <div style={{ position:"absolute",inset:0,backgroundImage:"radial-gradient(circle at 1px 1px,var(--b) 1px,transparent 0)",backgroundSize:"38px 38px",pointerEvents:"none" }}/>
         <div style={{ position:"relative",zIndex:1 }}>
           <div style={{ textAlign:"center",marginBottom:48 }}>
             <Stagger gap={0.11} style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:14 }}>
               <span className="st">✦ Our Work</span>
-              <h2 style={{ fontSize:"clamp(1.75rem,3.8vw,3rem)",fontWeight:800 }}>
-                Projects That <span className="g1">Speak for Us</span>
-              </h2>
+              <h2 style={{ fontSize:"clamp(1.75rem,3.8vw,3rem)",fontWeight:800 }}>Projects That <span className="g1">Speak for Us</span></h2>
               <p style={{ color:"var(--muted)",maxWidth:430,lineHeight:1.8,fontSize:".97rem" }}>Hover any card to reveal the full tech stack.</p>
             </Stagger>
             <div style={{ display:"flex",gap:9,justifyContent:"center",flexWrap:"wrap",marginTop:26 }}>
               {cats.map(c => <button key={c} className={`fp${filter===c?" on":""}`} onClick={() => setFilter(c)}>{c}</button>)}
             </div>
           </div>
-
           <div className="sm-1" style={{ display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))",gap:20,maxWidth:1100,margin:"0 auto" }}>
             {filtered.map((p, i) => (
               <RevealCard key={p.title} delay={i * 0.07}>
@@ -1129,13 +1017,7 @@ export default function NovaTech() {
                   <div className="pc-f" style={{ padding:"28px 26px",height:"100%",display:"flex",flexDirection:"column",justifyContent:"space-between" }}>
                     <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:`linear-gradient(to right,${p.a},${p.a}55)`,borderRadius:"18px 18px 0 0" }}/>
                     <div>
-                      <div style={{
-                        width:52,height:52,borderRadius:14,background:p.bg,border:`1px solid ${p.a}1a`,
-                        display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:"1.7rem",marginBottom:13,
-                        transition:"transform .3s cubic-bezier(.34,1.56,.64,1)",
-                      }}
-                        className="proj-icon"
-                      >{p.emoji}</div>
+                      <div style={{ width:52,height:52,borderRadius:14,background:p.bg,border:`1px solid ${p.a}1a`,display:"inline-flex",alignItems:"center",justifyContent:"center",fontSize:"1.7rem",marginBottom:13,transition:"transform .3s cubic-bezier(.34,1.56,.64,1)" }} className="proj-icon">{p.emoji}</div>
                       <h3 style={{ fontSize:"1.08rem",fontWeight:800,marginBottom:7,color:p.a }}>{p.title}</h3>
                       <p style={{ color:"var(--muted)",fontSize:".86rem",lineHeight:1.72 }}>{p.desc}</p>
                     </div>
@@ -1144,11 +1026,7 @@ export default function NovaTech() {
                       <span style={{ fontSize:".7rem",color:"var(--muted2)" }}>Hover →</span>
                     </div>
                   </div>
-                  {/* Overlay slides in from left on hover */}
-                  <div className="pc-ov" style={{
-                    background:`linear-gradient(145deg,${p.bg},var(--card))`,
-                    border:`1px solid ${p.a}2a`,backdropFilter:"blur(18px)",
-                  }}>
+                  <div className="pc-ov" style={{ background:`linear-gradient(145deg,${p.bg},var(--card))`,border:`1px solid ${p.a}2a`,backdropFilter:"blur(18px)" }}>
                     <div style={{ fontSize:"2.6rem",marginBottom:12,animation:"iconBounce .5s ease both" }}>{p.emoji}</div>
                     <h3 style={{ fontWeight:800,fontSize:"1.05rem",marginBottom:7,color:p.a,animation:"fadeUp .3s ease .05s both" }}>{p.title}</h3>
                     <p style={{ color:"var(--muted)",fontSize:".82rem",marginBottom:7,lineHeight:1.65,animation:"fadeUp .3s ease .1s both" }}>{p.desc}</p>
@@ -1166,106 +1044,39 @@ export default function NovaTech() {
       <section id="stack" style={{ padding:"100px clamp(18px,5vw,80px)",textAlign:"center" }}>
         <Stagger gap={0.1} style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:14,marginBottom:50 }}>
           <span className="st">✦ Our Stack</span>
-          <h2 style={{ fontSize:"clamp(1.75rem,3.8vw,3rem)",fontWeight:800 }}>
-            Technologies We <span className="g2">Master</span>
-          </h2>
-          <p style={{ color:"var(--muted)",maxWidth:440,lineHeight:1.85,fontSize:".97rem" }}>
-            Every tool chosen deliberately — for performance, scalability and developer experience.
-          </p>
+          <h2 style={{ fontSize:"clamp(1.75rem,3.8vw,3rem)",fontWeight:800 }}>Technologies We <span className="g2">Master</span></h2>
+          <p style={{ color:"var(--muted)",maxWidth:440,lineHeight:1.85,fontSize:".97rem" }}>Every tool chosen deliberately — for performance, scalability and developer experience.</p>
         </Stagger>
         <div style={{ display:"flex",flexWrap:"wrap",gap:12,justifyContent:"center",maxWidth:840,margin:"0 auto" }}>
-          {STACK.map((s, i) => (
-            <TechBadge key={s.l} label={s.l} emoji={s.e} delay={i * 0.045} />
-          ))}
+          {STACK.map((s, i) => <TechBadge key={s.l} label={s.l} emoji={s.e} delay={i * 0.045} />
+
+)}
         </div>
       </section>
 
       {/* ══════════════  PROCESS  ══════════════════════════════════ */}
-      <section id="process" style={{
-        padding:"80px clamp(18px,5vw,80px)",
-        background:"var(--bg2)",
-        position:"relative",
-      }}>
+      <section id="process" style={{ padding:"80px clamp(18px,5vw,80px)",background:"var(--bg2)",position:"relative" }}>
         <div style={{ textAlign:"center",marginBottom:64 }}>
           <Stagger gap={0.11} style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:14 }}>
             <span className="st">✦ How We Work</span>
-            <h2 style={{ fontSize:"clamp(1.75rem,3.8vw,3rem)",fontWeight:800 }}>
-              Our <span className="g1">Proven Process</span>
-            </h2>
-            <p style={{ color:"var(--muted)",maxWidth:420,lineHeight:1.85,fontSize:".97rem" }}>
-              From first call to final deployment — exactly what working with NovaTech looks like.
-            </p>
+            <h2 style={{ fontSize:"clamp(1.75rem,3.8vw,3rem)",fontWeight:800 }}>Our <span className="g1">Proven Process</span></h2>
+            <p style={{ color:"var(--muted)",maxWidth:420,lineHeight:1.85,fontSize:".97rem" }}>From first call to final deployment — exactly what working with NovaTech looks like.</p>
           </Stagger>
         </div>
-
         <div ref={tlRef} style={{ maxWidth:800,margin:"0 auto",position:"relative" }}>
-          <div style={{
-            position:"absolute",
-            left:"clamp(19px,4.5%,38px)",
-            top:16,bottom:16,width:2,
-            background:`linear-gradient(to bottom,var(--blue),var(--purple),var(--cyan),transparent)`,
-            borderRadius:99,opacity:tlVis?1:.12,
-            transition:"opacity 1.1s ease",
-          }}/>
-
+          <div style={{ position:"absolute",left:"clamp(19px,4.5%,38px)",top:16,bottom:16,width:2,background:"linear-gradient(to bottom,var(--blue),var(--purple),var(--cyan),transparent)",borderRadius:99,opacity:tlVis?1:.12,transition:"opacity 1.1s ease" }}/>
           {PROCESS.map((p, i) => (
-            <div key={p.n}
-              className={`tl${tlVis?" v":""}`}
-              style={{ display:"flex",gap:26,marginBottom:20,paddingLeft:"clamp(52px,8%,86px)",transitionDelay:`${i*.13}s`,position:"relative" }}
-            >
-              {/* Timeline dot with ripple ring on hover */}
-              <div style={{
-                position:"absolute",left:"clamp(7px,4%,26px)",
-                width:24,height:24,borderRadius:"50%",
-                background:p.bg,border:`2px solid ${p.c}`,
-                display:"flex",alignItems:"center",justifyContent:"center",
-                fontSize:".58rem",fontWeight:800,color:p.c,
-                marginTop:10,flexShrink:0,
-                boxShadow:hoverStep===i?`0 0 0 0 ${p.c}`:` 0 0 14px ${p.c}38`,
-                transition:"transform .28s,box-shadow .28s",
-                transform:hoverStep===i?"scale(1.25)":"scale(1)",
-                animation:hoverStep===i?"dotPulse .8s ease":"none",
-              }}>{p.n}
-                {/* Ripple ring */}
-                {hoverStep===i && (
-                  <span style={{
-                    position:"absolute",inset:-6,borderRadius:"50%",
-                    border:`2px solid ${p.c}`,
-                    animation:"dotRing .7s ease forwards",
-                    pointerEvents:"none",
-                  }}/>
-                )}
+            <div key={p.n} className={`tl${tlVis?" v":""}`}
+              style={{ display:"flex",gap:26,marginBottom:20,paddingLeft:"clamp(52px,8%,86px)",transitionDelay:`${i*.13}s`,position:"relative" }}>
+              <div style={{ position:"absolute",left:"clamp(7px,4%,26px)",width:24,height:24,borderRadius:"50%",background:p.bg,border:`2px solid ${p.c}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:".58rem",fontWeight:800,color:p.c,marginTop:10,flexShrink:0,boxShadow:hoverStep===i?`0 0 0 0 ${p.c}`:`0 0 14px ${p.c}38`,transition:"transform .28s,box-shadow .28s",transform:hoverStep===i?"scale(1.25)":"scale(1)",animation:hoverStep===i?"dotPulse .8s ease":"none" }}>
+                {p.n}
+                {hoverStep===i && <span style={{ position:"absolute",inset:-6,borderRadius:"50%",border:`2px solid ${p.c}`,animation:"dotRing .7s ease forwards",pointerEvents:"none" }}/>}
               </div>
-
-              <div
-                className="gc"
-                style={{
-                  flex:1,padding:"20px 24px",cursor:"pointer",
-                  borderColor:hoverStep===i?`${p.c}3a`:"var(--b)",
-                  boxShadow:hoverStep===i?`0 8px 36px ${p.c}18, var(--shadow)`:"var(--shadow)",
-                  background:hoverStep===i?`color-mix(in srgb, ${p.c} 8%, var(--card))`:"var(--card)",
-                  transition:"all .28s cubic-bezier(.2,.8,.2,1)",
-                  overflow:"hidden",
-                }}
-                onMouseEnter={() => setHoverStep(i)}
-                onMouseLeave={() => setHoverStep(null)}
-              >
-                {/* Progress bar that draws across on hover */}
-                <div style={{
-                  position:"absolute",bottom:0,left:0,right:0,height:2,
-                  background:`linear-gradient(to right,${p.c},${p.c}55)`,
-                  transform:hoverStep===i?"scaleX(1)":"scaleX(0)",
-                  transformOrigin:"left",
-                  transition:"transform .45s cubic-bezier(.4,0,.2,1)",
-                  borderRadius:"0 0 18px 18px",
-                }}/>
+              <div className="gc" style={{ flex:1,padding:"20px 24px",cursor:"pointer",borderColor:hoverStep===i?`${p.c}3a`:"var(--b)",boxShadow:hoverStep===i?`0 8px 36px ${p.c}18, var(--shadow)`:"var(--shadow)",background:hoverStep===i?`color-mix(in srgb, ${p.c} 8%, var(--card))`:"var(--card)",transition:"all .28s cubic-bezier(.2,.8,.2,1)",overflow:"hidden" }}
+                onMouseEnter={() => setHoverStep(i)} onMouseLeave={() => setHoverStep(null)}>
+                <div style={{ position:"absolute",bottom:0,left:0,right:0,height:2,background:`linear-gradient(to right,${p.c},${p.c}55)`,transform:hoverStep===i?"scaleX(1)":"scaleX(0)",transformOrigin:"left",transition:"transform .45s cubic-bezier(.4,0,.2,1)",borderRadius:"0 0 18px 18px" }}/>
                 <div style={{ display:"flex",alignItems:"center",gap:11,marginBottom:9 }}>
-                  <div style={{
-                    width:38,height:38,borderRadius:11,background:p.bg,border:`1px solid ${p.c}1a`,
-                    display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1.2rem",flexShrink:0,
-                    transition:"transform .3s cubic-bezier(.34,1.56,.64,1)",
-                    transform:hoverStep===i?"scale(1.15) rotate(-5deg)":"scale(1) rotate(0deg)",
-                  }}>{p.icon}</div>
+                  <div style={{ width:38,height:38,borderRadius:11,background:p.bg,border:`1px solid ${p.c}1a`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1.2rem",flexShrink:0,transition:"transform .3s cubic-bezier(.34,1.56,.64,1)",transform:hoverStep===i?"scale(1.15) rotate(-5deg)":"scale(1) rotate(0deg)" }}>{p.icon}</div>
                   <h3 style={{ fontWeight:700,fontSize:"1.03rem",color:hoverStep===i?p.c:"var(--text)",transition:"color .22s" }}>{p.t}</h3>
                   <span style={{ marginLeft:"auto",fontSize:".68rem",fontFamily:"'JetBrains Mono',monospace",color:"var(--muted2)",opacity:.6 }}>{p.n}</span>
                 </div>
@@ -1280,31 +1091,20 @@ export default function NovaTech() {
       <section style={{ padding:"100px clamp(18px,5vw,80px)",textAlign:"center",overflow:"hidden" }}>
         <Stagger gap={0.11} style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:14,marginBottom:56 }}>
           <span className="st">✦ Client Love</span>
-          <h2 style={{ fontSize:"clamp(1.75rem,3.8vw,3rem)",fontWeight:800 }}>
-            What Our <span className="g3">Clients Say</span>
-          </h2>
+          <h2 style={{ fontSize:"clamp(1.75rem,3.8vw,3rem)",fontWeight:800 }}>What Our <span className="g3">Clients Say</span></h2>
         </Stagger>
-
         <div style={{ maxWidth:660,margin:"0 auto" }}>
           {TESTIMONIALS.map((t, i) => i === tIdx && (
             <div key={t.name} style={{ animation:"slideInRight .48s ease both" }}>
               <div className="gb">
                 <div className="gb-in" style={{ padding:"36px 42px",position:"relative" }}>
                   <div style={{ display:"flex",justifyContent:"center",gap:4,marginBottom:20 }}>
-                    {Array(t.stars).fill(0).map((_,k) => (
-                      <span key={k} style={{ color:"#f59e0b",fontSize:"1.05rem" }}>★</span>
-                    ))}
+                    {Array(t.stars).fill(0).map((_,k) => <span key={k} style={{ color:"#f59e0b",fontSize:"1.05rem" }}>★</span>)}
                   </div>
                   <div style={{ position:"absolute",top:16,left:22,fontSize:"5rem",fontFamily:"Georgia,serif",color:t.c,opacity:.08,lineHeight:1,userSelect:"none" }}>"</div>
                   <p style={{ fontSize:"1rem",lineHeight:1.9,fontStyle:"italic",marginBottom:26,color:"var(--text)",position:"relative" }}>{t.txt}</p>
                   <div style={{ display:"flex",alignItems:"center",gap:13,justifyContent:"center" }}>
-                    <div style={{
-                      width:48,height:48,borderRadius:"50%",
-                      background:`linear-gradient(135deg,${t.c},${t.c}80)`,
-                      display:"flex",alignItems:"center",justifyContent:"center",
-                      fontWeight:800,color:"#fff",fontSize:".84rem",
-                      boxShadow:`0 4px 14px ${t.c}44`,
-                    }}>{t.av}</div>
+                    <div style={{ width:48,height:48,borderRadius:"50%",background:`linear-gradient(135deg,${t.c},${t.c}80)`,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,color:"#fff",fontSize:".84rem",boxShadow:`0 4px 14px ${t.c}44` }}>{t.av}</div>
                     <div style={{ textAlign:"left" }}>
                       <div style={{ fontWeight:700,fontSize:".93rem",color:"var(--text)" }}>{t.name}</div>
                       <div style={{ color:"var(--muted)",fontSize:".76rem" }}>{t.role}</div>
@@ -1314,33 +1114,19 @@ export default function NovaTech() {
               </div>
             </div>
           ))}
-
           <div style={{ display:"flex",gap:9,justifyContent:"center",marginTop:22 }}>
             {TESTIMONIALS.map((_, i) => (
-              <button key={i} onClick={() => setTIdx(i)} style={{
-                width:i===tIdx?26:6,height:6,borderRadius:99,border:"none",cursor:"pointer",
-                background:i===tIdx?"linear-gradient(to right,var(--blue),var(--cyan))":"var(--b2)",
-                transition:"all .32s cubic-bezier(.4,0,.2,1)",
-              }}/>
+              <button key={i} onClick={() => setTIdx(i)} style={{ width:i===tIdx?26:6,height:6,borderRadius:99,border:"none",cursor:"pointer",background:i===tIdx?"linear-gradient(to right,var(--blue),var(--cyan))":"var(--b2)",transition:"all .32s cubic-bezier(.4,0,.2,1)" }}/>
             ))}
           </div>
         </div>
       </section>
 
       {/* ══════════════  CONTACT  ══════════════════════════════════ */}
-      <section id="contact" style={{
-        padding:"80px clamp(18px,5vw,80px)",
-        background:"var(--bg2)",
-        position:"relative",
-      }}>
-        <div style={{
-          position:"absolute",inset:0,
-          backgroundImage:"radial-gradient(circle at 1px 1px,var(--b) 1px,transparent 0)",
-          backgroundSize:"38px 38px",pointerEvents:"none",
-        }}/>
+      <section id="contact" style={{ padding:"80px clamp(18px,5vw,80px)",background:"var(--bg2)",position:"relative" }}>
+        <div style={{ position:"absolute",inset:0,backgroundImage:"radial-gradient(circle at 1px 1px,var(--b) 1px,transparent 0)",backgroundSize:"38px 38px",pointerEvents:"none" }}/>
 
         <div style={{ position:"relative",zIndex:1,maxWidth:1060,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(280px,1fr))",gap:56,alignItems:"start" }}>
-
           <Stagger gap={0.11}>
             <span className="st">✦ Let's Build</span>
             <div>
@@ -1354,7 +1140,7 @@ export default function NovaTech() {
             <div>
               {[
                 {i:"📧",l:"Email",    v:"hello@novatech.dev",c:"#1d4ed8",bg:"#dbeafe"},
-                {i:"📱",l:"WhatsApp", v:"+1 (555) 123-4567", c:"#047857",bg:"#d1fae5"},
+                {i:"📱",l:"WhatsApp", v:"+94773693628", c:"#047857",bg:"#d1fae5"},
                 {i:"📍",l:"Location", v:"Remote · Worldwide", c:"#6d28d9",bg:"#ede9fe"},
               ].map(ct => (
                 <div key={ct.l} style={{ display:"flex",alignItems:"center",gap:15,marginBottom:20 }}>
@@ -1368,37 +1154,61 @@ export default function NovaTech() {
             </div>
           </Stagger>
 
-          <div className="gb-spin" style={{ animation:"formSlideIn .7s cubic-bezier(.2,.8,.2,1) .2s both" }}>
+          {/* ── Contact Form Box ── */}
+          <div ref={formBoxRef} className="gb-spin" style={{ animation:"formSlideIn .7s cubic-bezier(.2,.8,.2,1) .2s both" }}>
             <div className="gb-in" style={{ padding:"32px 28px" }}>
-              {sent ? (
+
+              {/* ✅ SUCCESS STATE */}
+              {formStatus === "sent" ? (
                 <div style={{ textAlign:"center",padding:"46px 0",animation:"fadeUp .45s ease" }}>
                   <div style={{ fontSize:"3.2rem",marginBottom:14,animation:"float 2s ease-in-out infinite" }}>🚀</div>
                   <h3 style={{ fontWeight:800,fontSize:"1.35rem",marginBottom:10 }} className="g1">Message Sent!</h3>
-                  <p style={{ color:"var(--muted)" }}>We'll be in touch within 24 hours.</p>
+                  <p style={{ color:"var(--muted)",marginBottom:6 }}>We'll be in touch within 24 hours.</p>
+                  <p style={{ color:"var(--muted2)",fontSize:".76rem" }}>Form will reset automatically…</p>
                 </div>
               ) : (
-                <form
-                  onSubmit={e => { e.preventDefault(); setSent(true); setTimeout(() => setSent(false), 4200); }}
-                  style={{ display:"flex",flexDirection:"column",gap:15 }}
-                >
+                <form onSubmit={handleSubmit} style={{ display:"flex",flexDirection:"column",gap:15 }}>
+
+                  {/* ❌ ERROR BANNER */}
+                  {formStatus === "error" && (
+                    <div style={{
+                      padding:"11px 15px",borderRadius:11,
+                      background:"rgba(239,68,68,.08)",border:"1.5px solid rgba(239,68,68,.25)",
+                      color:"#dc2626",fontSize:".82rem",lineHeight:1.55,
+                      animation:"fadeUp .3s ease",display:"flex",gap:10,alignItems:"flex-start",
+                    }}>
+                      <span style={{ fontSize:"1rem",flexShrink:0 }}>⚠️</span>
+                      <span>{errorMsg || "Failed to send. Please try again."}</span>
+                    </div>
+                  )}
+
                   <div className="sm-1" style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:12 }}>
                     <div style={{ animation:"formFieldIn .5s ease .1s both" }}>
                       <label style={{ fontSize:".68rem",color:"var(--muted)",display:"block",marginBottom:5,letterSpacing:".06em",textTransform:"uppercase",fontWeight:700 }}>Name</label>
                       <div className="inp-wrap">
-                        <input required className="inp" placeholder="Alex Chen" value={form.name} onChange={e => setForm(f => ({...f,name:e.target.value}))}/>
+                        <input required className="inp" placeholder="Alex Chen"
+                          value={form.name}
+                          onChange={e => setForm(f => ({...f,name:e.target.value}))}
+                          disabled={formStatus === "sending"} />
                       </div>
                     </div>
                     <div style={{ animation:"formFieldIn .5s ease .18s both" }}>
                       <label style={{ fontSize:".68rem",color:"var(--muted)",display:"block",marginBottom:5,letterSpacing:".06em",textTransform:"uppercase",fontWeight:700 }}>Email</label>
                       <div className="inp-wrap">
-                        <input required type="email" className="inp" placeholder="alex@co.com" value={form.email} onChange={e => setForm(f => ({...f,email:e.target.value}))}/>
+                        <input required type="email" className="inp" placeholder="alex@co.com"
+                          value={form.email}
+                          onChange={e => setForm(f => ({...f,email:e.target.value}))}
+                          disabled={formStatus === "sending"} />
                       </div>
                     </div>
                   </div>
+
                   <div style={{ animation:"formFieldIn .5s ease .26s both" }}>
                     <label style={{ fontSize:".68rem",color:"var(--muted)",display:"block",marginBottom:5,letterSpacing:".06em",textTransform:"uppercase",fontWeight:700 }}>Project Type</label>
                     <div className="inp-wrap">
-                      <select className="inp" value={form.project} onChange={e => setForm(f => ({...f,project:e.target.value}))}>
+                      <select className="inp" value={form.project}
+                        onChange={e => setForm(f => ({...f,project:e.target.value}))}
+                        disabled={formStatus === "sending"}>
                         <option value="">Select a service…</option>
                         <option>Flutter Mobile App</option>
                         <option>MERN Web Application</option>
@@ -1408,21 +1218,34 @@ export default function NovaTech() {
                       </select>
                     </div>
                   </div>
+
                   <div style={{ animation:"formFieldIn .5s ease .34s both" }}>
                     <label style={{ fontSize:".68rem",color:"var(--muted)",display:"block",marginBottom:5,letterSpacing:".06em",textTransform:"uppercase",fontWeight:700 }}>Tell us about your idea</label>
                     <div className="inp-wrap">
-                      <textarea required className="inp" rows={4} placeholder="Goals, timeline, budget range…" value={form.msg} onChange={e => setForm(f => ({...f,msg:e.target.value}))} style={{ resize:"vertical" }}/>
+                      <textarea required className="inp" rows={4} placeholder="Goals, timeline, budget range…"
+                        value={form.msg}
+                        onChange={e => setForm(f => ({...f,msg:e.target.value}))}
+                        disabled={formStatus === "sending"}
+                        style={{ resize:"vertical" }} />
                     </div>
                   </div>
+
                   <div style={{ animation:"formFieldIn .5s ease .42s both" }}>
                     <button
                       type="submit"
+                      disabled={formStatus === "sending"}
                       className="bp send-btn"
-                      style={{ width:"100%",justifyContent:"center",padding:13,fontSize:".9rem" }}
+                      style={{ width:"100%",justifyContent:"center",padding:13,fontSize:".9rem",gap:10 }}
                     >
-                      Send Message →
+                      {formStatus === "sending" ? (
+                        <>
+                          <span className="spinner" />
+                          Sending…
+                        </>
+                      ) : "Send Message →"}
                     </button>
                   </div>
+
                   <p style={{ textAlign:"center",fontSize:".71rem",color:"var(--muted2)",animation:"formFieldIn .5s ease .5s both" }}>
                     🔒 Your info is never shared. Response within 24 h.
                   </p>
@@ -1434,15 +1257,10 @@ export default function NovaTech() {
       </section>
 
       {/* ══════════════  FOOTER  ═══════════════════════════════════ */}
-      <footer style={{
-        borderTop:"1px solid var(--b)",
-        padding:"34px clamp(18px,5vw,80px)",
-        display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:14,
-        background:"var(--bg)",
-      }}>
+      <footer style={{ borderTop:"1px solid var(--b)",padding:"34px clamp(18px,5vw,80px)",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:14,background:"var(--bg)" }}>
         <div style={{ display:"flex",alignItems:"center",gap:9 }}>
-          <div style={{ width:30,height:30,borderRadius:9,background:"linear-gradient(135deg,var(--blue),#0ea5e9)",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:800,color:"#fff",fontSize:".82rem" }}>N</div>
-          <span style={{ fontFamily:"'Bricolage Grotesque',sans-serif",fontWeight:800,fontSize:".97rem",color:"var(--text)" }}>Nova<span className="g1">Tech</span></span>
+          <img src={logo} alt="NovaTech Logo" style={{ width:120,height:120,borderRadius:9,objectFit:"cover" }} />
+          <span style={{ fontFamily:"'Bricolage Grotesque',sans-serif",fontWeight:800,fontSize:"32px",color:"var(--text)" }}>Nova<span className="g1">Tech</span></span>
         </div>
         <p style={{ color:"var(--muted)",fontSize:".76rem",fontFamily:"'JetBrains Mono',monospace" }}>
           © 2025 NovaTech · Crafting the future, one commit at a time.
@@ -1459,11 +1277,7 @@ export default function NovaTech() {
       </footer>
 
       {/* ══════════════  WHATSAPP  ════════════════════════════════ */}
-      <div
-        className="wa"
-        onClick={() => window.open("https://wa.me/15551234567","_blank")}
-        title="Chat on WhatsApp"
-      >
+      <div className="wa" onClick={() => window.open("https://wa.me/+94773693628","_blank")} title="Chat on WhatsApp">
         <div className="war"/>
         <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
           <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
